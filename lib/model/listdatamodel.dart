@@ -1,6 +1,7 @@
 import 'dart:io';
 
 class ListModel {
+  String item;
   String message;
   File imagePath;
   int id;
@@ -11,7 +12,8 @@ class ListModel {
   String datetime;
 
   ListModel(
-      {this.message,
+      {this.item,
+        this.message,
       this.imagePath,
       this.id,
       this.address,
@@ -21,6 +23,7 @@ class ListModel {
       this.datetime});
   Map<String, dynamic> toMap() {
     return {
+      'item':item,
       'message': message,
       'imagePath': imagePath.path,
       'address': address,

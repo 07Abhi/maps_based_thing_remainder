@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:newnativeproject/model/placemodel.dart';
 
+// ignore: must_be_immutable
 class MapScreen extends StatefulWidget {
   PlaceCoordinates initialLocation;
   final bool isSelecting;

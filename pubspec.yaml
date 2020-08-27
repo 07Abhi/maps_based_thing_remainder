@@ -22,6 +22,8 @@ dependencies:
   google_maps_flutter: ^0.5.17
   http: ^0.12.1
   toast: ^0.1.5
+  connectivity: ^0.4.9+2
+  app_settings: ^4.0.3
   
 
 dev_dependencies:
@@ -36,4 +38,9 @@ flutter:
     - family: Ubuntu
       fonts:
         - asset: fonts/Ubuntu-Regular.ttf
+    - family: DancingScript
+      fonts:
+        - asset: fonts/DancingScript-VariableFont_wght.ttf
+  assets:
+    - images/
 

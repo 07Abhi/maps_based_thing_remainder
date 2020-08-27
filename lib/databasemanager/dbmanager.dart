@@ -7,6 +7,7 @@ class DBmanager {
   Database _database;
   String _dbName = 'remainder2.db';
   String _tableName = 'ramainders2';
+  String colitem = 'item';
   String colmessage = 'message';
   String colimagepath = 'imagePath';
   String colid = 'id';
@@ -25,7 +26,7 @@ class DBmanager {
 
   _onCreate(Database db, int version) async {
     await db.execute(
-        'CREATE TABLE $_tableName($colid INTEGER PRIMARY KEY,$colmessage TEXT,$colimagepath TEXT,$coladdress TEXT,$colmapurl TEXT,$collatitude REAL,$collongitude REAL,$coldatetime TEXT)');
+        'CREATE TABLE $_tableName($colid INTEGER PRIMARY KEY,$colitem TEXT,$colmessage TEXT,$colimagepath TEXT,$coladdress TEXT,$colmapurl TEXT,$collatitude REAL,$collongitude REAL,$coldatetime TEXT)');
   }
 
   Future<int> insertData(ListModel listdata) async {
@@ -40,7 +41,9 @@ class DBmanager {
     return List.generate(
       map.length,
       (index) => ListModel(
+        
           id: map[index]['id'],
+          item: map[index]['item'],
           message: map[index]['message'],
           imagePath: File(map[index]['imagePath']),
           address: map[index]['address'],

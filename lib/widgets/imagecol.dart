@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+// ignore: must_be_immutable
 class Imagefield extends StatefulWidget {
   Function imagePathSetter;
   Imagefield(this.imagePathSetter);
@@ -26,7 +27,7 @@ class _ImagefieldState extends State<Imagefield> {
                 onGalleryOption();
               },
               child: Text('Gallery'),
-              color: Colors.yellow,
+              color: Theme.of(context).accentColor,
             ),
           ),
           SimpleDialogOption(
@@ -36,7 +37,7 @@ class _ImagefieldState extends State<Imagefield> {
                 onCameraOption();
               },
               child: Text('Camera'),
-              color: Colors.yellow,
+              color: Theme.of(context).accentColor,
             ),
           ),
         ],
@@ -106,8 +107,9 @@ class _ImagefieldState extends State<Imagefield> {
                   width: MediaQuery.of(context).size.width,
                 )
               : Text(
-                  'No Preview Available',
+                  'Select Image',
                   textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey[700]),
                 ),
         ),
         SizedBox(
@@ -118,13 +120,13 @@ class _ImagefieldState extends State<Imagefield> {
             onPressed: () => showUserChoice(context),
             icon: Icon(
               Icons.camera,
-              color: Colors.blue,
+              color: Color(0xfffce83a),
             ),
             label: Text(
               'Submit',
-              style: TextStyle(color: Colors.blue),
+              style: TextStyle(color: Color(0xfffce83a)),
             ),
-            color: Colors.grey[300],
+            color: Theme.of(context).primaryColor,
           ),
         ),
       ],

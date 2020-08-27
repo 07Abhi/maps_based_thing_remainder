@@ -1,3 +1,6 @@
+import 'package:toast/toast.dart';
+import 'package:app_settings/app_settings.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:newnativeproject/model/placemodel.dart';
 import 'package:newnativeproject/databasemanager/dbmanager.dart';
 import 'package:newnativeproject/model/listdatamodel.dart';
@@ -14,6 +17,7 @@ class ShowListData extends StatefulWidget {
 class _ShowListDataState extends State<ShowListData> {
   List<ListModel> datalist = [];
   bool _maploading = false;
+
   DBmanager _dbMngr = DBmanager();
   void getDataFromDB() async {
     var data = await _dbMngr.queryDatabase();
@@ -23,6 +27,30 @@ class _ShowListDataState extends State<ShowListData> {
       });
     } else {
       datalist = [];
+    }
+  }
+
+  Future networkChecker() async {
+    var connectionChecker = await (Connectivity().checkConnectivity());
+    if (connectionChecker != ConnectivityResult.mobile &&
+        connectionChecker != ConnectivityResult.wifi) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Not Internet Access'),
+          content: Text('Allow internet via device data or Wifi'),
+          actions: [
+            FlatButton.icon(
+              icon: Icon(Icons.settings),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+                AppSettings.openWIFISettings();
+              },
+              label: Text('Settings'),
+            )
+          ],
+        ),
+      );
     }
   }
 
@@ -47,36 +75,102 @@ class _ShowListDataState extends State<ShowListData> {
   @override
   void initState() {
     getDataFromDB();
+    networkChecker();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.indigo[100],
+      backgroundColor: Theme.of(context).accentColor,
       appBar: AppBar(
-        title: Text('Your Remainders!'),
+        title: Text('My Remainders'),
+        centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, AddItemPage.id);
-            },
-            icon: Icon(Icons.add),
+          Visibility(
+            visible: datalist.isEmpty ? false : true,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, AddItemPage.id);
+              },
+              icon: Icon(Icons.add),
+            ),
           ),
         ],
       ),
       body: datalist.isEmpty
           ? Center(
-              child: Text('No Preview Available!!!'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 150.0),
+                            child: Image.asset(
+                              'images/pngwave.png',
+                              height: 150.0,
+                              width: 150.0,
+                            ),
+                          ),
+                          Text(
+                            'No Remainders Yet!!',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 50.0),
+                        child: RaisedButton.icon(
+                          icon: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(
+                                context, AddItemPage.id);
+                          },
+                          label: Text(
+                            'Remainder',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 15.0),
+                          ),
+                          elevation: 5.0,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             )
           : ListView.builder(
               itemBuilder: (context, index) => Dismissible(
                 key: UniqueKey(),
                 direction: DismissDirection.endToStart,
                 onDismissed: (dir) {
-                  _dbMngr.deleteTile(datalist[index].id).then((value) => {
-                        print('item deleted'),
-                      });
+                  _dbMngr.deleteTile(datalist[index].id).then((value) => {});
+                  Toast.show(
+                    'Item Collected',
+                    context,
+                    duration: Toast.LENGTH_LONG,
+                    gravity: Toast.BOTTOM,
+                    backgroundColor: Colors.black87,
+                    textColor: Colors.white70,
+                  );
                   setState(() {
                     datalist.removeAt(index);
                     print('item deleted at $index');
@@ -92,13 +186,14 @@ class _ShowListDataState extends State<ShowListData> {
                     ),
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.indigo,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
                 child: Card(
                   elevation: 5.0,
-                  color: Colors.white,
+                  color: Color(0xffafffff),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
@@ -108,8 +203,9 @@ class _ShowListDataState extends State<ShowListData> {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           border: Border.all(
-                            width: 1.5,
-                            color: Colors.grey,
+                            width: 2.0,
+                            color: Theme.of(context).primaryColor,
+                            style: BorderStyle.solid,
                           ),
                         ),
                         child: Image.file(
@@ -119,10 +215,37 @@ class _ShowListDataState extends State<ShowListData> {
                           fit: BoxFit.cover,
                         ),
                       ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 4.0),
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Item:- ',
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          color: Colors.indigo,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    TextSpan(
+                                      text: datalist[index].item,
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.black87,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 4.0),
@@ -211,7 +334,7 @@ class _ShowListDataState extends State<ShowListData> {
                                       'Location',
                                       style: TextStyle(color: Colors.white),
                                     ),
-                                    color: Colors.indigo,
+                                    color: Theme.of(context).primaryColor,
                                   ),
                                 ),
                                 Visibility(

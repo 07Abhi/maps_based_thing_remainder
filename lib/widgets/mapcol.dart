@@ -5,6 +5,7 @@ import 'package:newnativeproject/pages/mapdisplay.dart';
 import 'package:newnativeproject/model/placemodel.dart';
 import 'package:location/location.dart';
 
+// ignore: must_be_immutable
 class MapField extends StatefulWidget {
   Function mapData;
   MapField(this.mapData);
@@ -81,7 +82,13 @@ class _MapFieldState extends State<MapField> {
                       fit: BoxFit.cover,
                     )
                   : Center(
-                      child: Text('Choose Map Option!!'),
+                      child: Image(
+                        image: AssetImage(
+                          'images/maplogo.png',
+                        ),
+                        height: 100.0,
+                        width: 100.0,
+                      ),
                     ),
             ),
             Visibility(
@@ -99,22 +106,29 @@ class _MapFieldState extends State<MapField> {
               onPressed: () => onCurrentLocation(),
               icon: Icon(
                 Icons.location_on,
-                color: Colors.indigo,
+                color: Theme.of(context).accentColor,
               ),
               label: Text(
-                'Current Location',
-                style: TextStyle(color: Colors.indigo),
+                'Device location',
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 18.0),
               ),
             ),
-            FlatButton.icon(
-              onPressed: () => onMapOption(),
-              icon: Icon(
-                Icons.map,
-                color: Colors.indigo,
-              ),
-              label: Text(
-                'Seacrh on map',
-                style: TextStyle(color: Colors.indigo),
+            SizedBox(
+              child: Text('/'),
+            ),
+            Flexible(
+              child: FlatButton.icon(
+                onPressed: () => onMapOption(),
+                icon: Icon(
+                  Icons.map,
+                  color: Theme.of(context).accentColor,
+                ),
+                label: Text(
+                  'Select on map',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 18.0),
+                ),
               ),
             ),
           ],

@@ -23,7 +23,9 @@ class _AddItemPageState extends State<AddItemPage> {
   LatLng latlongData;
   String address;
   final _textController = TextEditingController();
+  final _itemtextController = TextEditingController();
   String mapdataUrl;
+  final _msgNode = FocusNode();
   ListModel listdata;
   void _setImageData(File imageFile) {
     _imagedata = imageFile;
@@ -50,6 +52,7 @@ class _AddItemPageState extends State<AddItemPage> {
         latlongData != null) {
       if (_textController.text.length > 2) {
         var list = ListModel(
+            item: _itemtextController.text,
             message: _textController.text,
             imagePath: _imagedata,
             mapimageUrl: mapdataUrl,
@@ -106,8 +109,34 @@ class _AddItemPageState extends State<AddItemPage> {
                   child: Column(
                     children: [
                       TextField(
+                        controller: _itemtextController,
+                        textCapitalization: TextCapitalization.words,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          labelText: 'Item Name',
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 2.0,
+                                color: Theme.of(context).primaryColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 2.0,
+                                color: Theme.of(context).accentColor),
+                          ),
+                        ),
+                        textInputAction: TextInputAction.next,
+                        onSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_msgNode);
+                        },
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      TextField(
                         controller: _textController,
                         textCapitalization: TextCapitalization.words,
+                        focusNode: _msgNode,
                         decoration: InputDecoration(
                           labelText: 'Message',
                           hintText: 'Remainder Message...',
@@ -119,7 +148,7 @@ class _AddItemPageState extends State<AddItemPage> {
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 width: 2.0,
-                                color: Theme.of(context).primaryColor),
+                                color: Theme.of(context).accentColor),
                           ),
                         ),
                       ),
@@ -139,7 +168,7 @@ class _AddItemPageState extends State<AddItemPage> {
                 onPressed: saveDataToDb,
                 icon: Icon(Icons.check),
                 label: Text('Add'),
-                color: Colors.yellow,
+                color: Theme.of(context).accentColor,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ],
